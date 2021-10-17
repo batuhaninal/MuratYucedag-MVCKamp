@@ -45,5 +45,27 @@ namespace MY_MVCProjeKampi.Controllers
             }
             return View();
         }
+
+        
+        public ActionResult DeleteCategory(int id)
+        {
+            var categoryValue = categoryManager.GetById(id);
+            categoryManager.Delete(categoryValue);
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public ActionResult UpdateCategory(int id)
+        {
+            var categoryValues = categoryManager.GetById(id);
+            return View(categoryValues);
+        }
+
+        [HttpPost]
+        public ActionResult UpdateCategory(Category entity)
+        {
+            categoryManager.Update(entity);
+            return RedirectToAction("Index");
+        }
     }
 }
