@@ -25,7 +25,8 @@ namespace BusinessLayer.Concrete
 
         public void Delete(Heading entity)
         {
-            _headingDal.Delete(entity);
+            entity.HeadingStatus = false;
+            _headingDal.Update(entity);
         }
 
         public List<Heading> GetAll()

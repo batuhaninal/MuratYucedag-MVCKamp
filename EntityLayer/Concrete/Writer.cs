@@ -25,6 +25,9 @@ namespace EntityLayer.Concrete
         public string WriterAbout { get; set; }
         [StringLength(50)]
         public string WriterTitle { get; set; }
+
+        public bool WriterStatus { get; set; }
+
         //Heading
         public ICollection<Heading> Headings { get; set; }
 
