@@ -12,6 +12,7 @@ namespace MY_MVCProjeKampi.Controllers
     public class AboutController : Controller
     {
         AboutManager aboutManager = new AboutManager(new EfAboutDal());
+        [Authorize]
         public ActionResult Index()
         {
             var aboutValues = aboutManager.GetAll();

@@ -13,6 +13,7 @@ namespace MY_MVCProjeKampi.Controllers
     {
         ContactManager contactManager = new ContactManager(new EfContactDal());
         ContactValidator validationRules = new ContactValidator();
+        [Authorize]
         public ActionResult Index()
         {
             var contactValues = contactManager.GetAll();
