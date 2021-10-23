@@ -9,6 +9,7 @@ using System.Web.Security;
 
 namespace MY_MVCProjeKampi.Controllers
 {
+    [AllowAnonymous]
     public class LoginController : Controller
     {
         // GET: Login
@@ -31,6 +32,28 @@ namespace MY_MVCProjeKampi.Controllers
             else
             {
                 return RedirectToAction("Index");
+            }
+        }
+
+        [HttpGet]
+        public ActionResult WriterLogin()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult WriterLogin(Writer entity)
+        {
+            Context c = new Context();
+            var writerUserInfo = c.Writers.FirstOrDefault(x => x.WriterMail == entity.WriterMail && x.WriterPassword == entity.WriterPassword);
+            if (writerUserInfo != null)
+            {
+                FormsAuthentication.SetAuthCookie(writerUserInfo.WriterMail, false);
+                Session["WriterMail"] = writerUserInfo.WriterMail;
+                return RedirectToAction("MyContent", "WriterPanelContent");
+            }
+            else
+            {
+                return RedirectToAction("WriterLogin");
             }
         }
     }
