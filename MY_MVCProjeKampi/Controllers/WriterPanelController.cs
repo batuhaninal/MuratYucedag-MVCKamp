@@ -16,6 +16,7 @@ namespace MY_MVCProjeKampi.Controllers
         HeadingManager headingManager = new HeadingManager(new EfHeadingDal());
         CategoryManager categoryManager = new CategoryManager(new EfCategoryDal());
         Context c = new Context();
+        int id;
         public ActionResult WriterProfile()
         {
             return View();
@@ -26,6 +27,7 @@ namespace MY_MVCProjeKampi.Controllers
             
             p = (string)Session["WriterMail"];
             var writerIdInfo = c.Writers.Where(x => x.WriterMail == p).Select(x => x.WriterId).FirstOrDefault();
+            id = writerIdInfo;
             var values = headingManager.GetAllByWriter(writerIdInfo);
             return View(values);
         }
@@ -33,6 +35,7 @@ namespace MY_MVCProjeKampi.Controllers
         [HttpGet]
         public ActionResult NewHeading()
         {
+
             List<SelectListItem> values = (from x in categoryManager.GetAll()
                                            select new SelectListItem
                                            {
@@ -45,6 +48,8 @@ namespace MY_MVCProjeKampi.Controllers
         [HttpPost]
         public ActionResult NewHeading(Heading entity)
         {
+            string currentWriterMail = (string)Session["WriterMail"];
+            var writerIdInfo = c.Writers.Where(x => x.WriterMail == currentWriterMail).Select(x => x.WriterId).FirstOrDefault();
             entity.HeadingDate = DateTime.Parse(DateTime.Now.ToShortDateString());
             entity.WriterId = writerIdInfo;
             entity.HeadingStatus = true;
@@ -55,6 +60,7 @@ namespace MY_MVCProjeKampi.Controllers
         [HttpGet]
         public ActionResult UpdateHeading(int id)
         {
+           
             List<SelectListItem> valueCategory = (from x in categoryManager.GetAll()
                                                   select new SelectListItem
                                                   {
@@ -80,6 +86,12 @@ namespace MY_MVCProjeKampi.Controllers
             headingValue.HeadingStatus = false;
             headingManager.Delete(headingValue);
             return RedirectToAction("MyHeading");
+        }
+
+        public ActionResult AllHeading()
+        {
+            var headings = headingManager.GetAll();
+            return View(headings);
         }
     }
 }
