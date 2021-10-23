@@ -7,6 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using PagedList;
+using PagedList.Mvc;
+using FluentValidation.Results;
+using BusinessLayer.ValidationRules.FluentValidation;
 
 namespace MY_MVCProjeKampi.Controllers
 {
@@ -15,10 +19,35 @@ namespace MY_MVCProjeKampi.Controllers
         // GET: WriterPanel
         HeadingManager headingManager = new HeadingManager(new EfHeadingDal());
         CategoryManager categoryManager = new CategoryManager(new EfCategoryDal());
+        WriterManager writerManager = new WriterManager(new EfWriterDal());
+        WriterValidator writerValidation = new WriterValidator();
         Context c = new Context();
-        int id;
-        public ActionResult WriterProfile()
+        [HttpGet]
+        public ActionResult WriterProfile(int id=0)
         {
+            string p = (string)Session["WriterMail"];
+            id = c.Writers.Where(x => x.WriterMail == p).Select(x => x.WriterId).FirstOrDefault();
+            var writerValues = writerManager.GetById(id);
+            return View(writerValues);
+        }
+
+
+        [HttpPost]
+        public ActionResult WriterProfile(Writer entity)
+        {
+            ValidationResult result = writerValidation.Validate(entity);
+            if (result.IsValid)
+            {
+                writerManager.Update(entity);
+                return RedirectToAction("AllHeading");
+            }
+            else
+            {
+                foreach (var item in result.Errors)
+                {
+                    ModelState.AddModelError(item.PropertyName, item.ErrorMessage);
+                }
+            }
             return View();
         }
 
@@ -27,7 +56,6 @@ namespace MY_MVCProjeKampi.Controllers
             
             p = (string)Session["WriterMail"];
             var writerIdInfo = c.Writers.Where(x => x.WriterMail == p).Select(x => x.WriterId).FirstOrDefault();
-            id = writerIdInfo;
             var values = headingManager.GetAllByWriter(writerIdInfo);
             return View(values);
         }
@@ -88,9 +116,9 @@ namespace MY_MVCProjeKampi.Controllers
             return RedirectToAction("MyHeading");
         }
 
-        public ActionResult AllHeading()
+        public ActionResult AllHeading(int page=1)
         {
-            var headings = headingManager.GetAll();
+            var headings = headingManager.GetAll().ToPagedList(page, 4);
             return View(headings);
         }
     }

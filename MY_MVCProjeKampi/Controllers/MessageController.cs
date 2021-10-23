@@ -15,15 +15,15 @@ namespace MY_MVCProjeKampi.Controllers
     {
         MessageManager messageManager = new MessageManager(new EfMessageDal());
         MessageValidator rules = new MessageValidator();
-        public ActionResult Index()
+        public ActionResult Index(string p)
         {
-            var messageValues = messageManager.GetAllInbox();
+            var messageValues = messageManager.GetAllInbox(p);
             return View(messageValues);
         }
 
-        public ActionResult Sendbox()
+        public ActionResult Sendbox(string p)
         {
-            var messageValues = messageManager.GetAllSendbox();
+            var messageValues = messageManager.GetAllSendbox(p);
             return View(messageValues);
         }
 

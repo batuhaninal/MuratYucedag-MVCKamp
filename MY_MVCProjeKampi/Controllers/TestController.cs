@@ -18,5 +18,10 @@ namespace MY_MVCProjeKampi.Controllers
         {
             return View();
         }
+
+        public ActionResult ToDoList()
+        {
+            return View();
+        }
     }
 }
