@@ -52,5 +52,10 @@ namespace BusinessLayer.Concrete
         {
             _contentDal.Update(entity);
         }
+
+        public List<Content> GetBySearch(string p)
+        {
+            return _contentDal.List(x => x.ContentValue.Contains(p));
+        }
     }
 }
